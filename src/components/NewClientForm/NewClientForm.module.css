@@ -1,0 +1,88 @@
+/* ==========================================================================
+   NEW CLIENT FORM STYLES
+   ========================================================================== */
+
+.formContainer {
+  background-color: var(--color-surface);
+  padding: 1.5rem; /* 24px */
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  height: fit-content; /* Garante que o container não seja maior que o conteúdo */
+}
+
+.formTitle {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-primary);
+}
+
+.formGroup {
+  margin-bottom: 1.25rem; /* 20px */
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem; /* 8px */
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.75rem 1rem; /* 12px 16px */
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(106, 90, 249, 0.2);
+}
+
+.formGroup input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+/* --- Botão de Submissão --- */
+.submitButton {
+  width: 100%;
+  padding: 0.875rem; /* 14px */
+  border: none;
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.submitButton:disabled {
+  background-color: #a5b4fc; /* Um tom mais claro de roxo */
+  cursor: not-allowed;
+}
+
+/* --- Caixa de Erro --- */
+.errorBox {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  background-color: #fff2f2;
+  border: 1px solid #ffcbc8;
+  color: #c50e0e;
+  border-radius: var(--border-radius-md);
+  font-size: 0.875rem;
+  text-align: center;
+}

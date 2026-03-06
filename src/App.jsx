@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import ClientList from './components/ClientList/index.jsx';
+import Dashboard from './components/Dashboard/index.jsx';
+import RelatorioVendas from './components/RelatorioVendas/index.jsx';
+import NewClientForm from './components/NewClientForm/index.jsx';
+import styles from './App.module.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // A chave de atualização força os componentes a recarregarem seus dados
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Esta função é passada para o formulário e chamada quando um cliente é adicionado
+  const handleClientAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className={styles.appContainer}>
+      
+      {/* -- Cabeçalho da Aplicação -- */}
+      <header className={styles.header}>
+        <h1 className={styles.headerTitle}>Omie API Connector Control</h1>
+        <p className={styles.headerSubtitle}>Sincronização em tempo real com Sandbox</p>
+      </header>
+
+      {/* -- Dashboard Principal -- */}
+      <div className={styles.dashboardContainer}>
+        <Dashboard key={`dash-${refreshKey}`} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      {/* -- Grid Principal (Formulário e Relatório) -- */}
+      <div className={styles.mainGrid}>
+        <div className={styles.formSection}>
+          <NewClientForm onClientAdded={handleClientAdded} />
+        </div>
+        <div className={styles.salesSection}>
+          <RelatorioVendas key={`vendas-${refreshKey}`} />
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      {/* -- Lista de Clientes (seção final) -- */}
+      <div className={styles.clientListSection}>
+        <ClientList key={`list-${refreshKey}`} />
+      </div>
+
+    </div>
+  );
 }
 
-export default App
+export default App;

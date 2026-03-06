@@ -1,0 +1,70 @@
+/* ==========================================================================
+   APP LAYOUT STYLES (Mobile-First)
+   ========================================================================== */
+
+.appContainer {
+  max-width: 1400px; /* Limita a largura para conforto em telas muito grandes */
+  margin: 0 auto;
+  padding: 1rem; /* Padding base para telas pequenas */
+}
+
+/* --- Cabeçalho --- */
+.header {
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headerTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.headerSubtitle {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+/* --- Contêineres de Seção --- */
+.dashboardContainer,
+.mainGrid,
+.clientListSection {
+  margin-bottom: 2rem; /* Espaçamento padrão entre as seções */
+}
+
+/* --- Grid Principal --- */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* Em mobile, uma coluna única */
+  gap: 2rem;
+}
+
+/* Cada filho direto do grid (form e vendas) */
+.formSection, .salesSection {
+  width: 100%;
+}
+
+
+/* ==========================================================================
+   TABLET & DESKTOP LAYOUT
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .appContainer {
+    padding: 2rem; /* Mais padding em telas maiores */
+  }
+
+  .headerTitle {
+    font-size: 1.875rem; /* 30px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .mainGrid {
+    /* Em desktops, um grid com proporção 1/3 para o form e 2/3 para o resto */
+    grid-template-columns: 380px 1fr;
+    align-items: flex-start; /* Alinha os itens no topo */
+  }
+}

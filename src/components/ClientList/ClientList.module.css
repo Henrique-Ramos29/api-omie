@@ -1,0 +1,136 @@
+/* ==========================================================================
+   CLIENT LIST STYLES (Mobile-First)
+   ========================================================================== */
+
+/* --- Container Principal --- */
+.container {
+  /* Em telas pequenas, o container ocupa a largura total com um padding suave */
+  width: 100%;
+  padding: 1.5rem; /* 24px */
+  margin: 0 auto;
+}
+
+/* --- Cabeçalho --- */
+.header {
+  display: flex;
+  flex-direction: column; /* Empilha os itens verticalmente no celular */
+  align-items: flex-start;
+  gap: 0.5rem; /* Espaço entre o título e o contador */
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+  font-size: 1.75rem; /* 28px */
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.countBadge {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px; /* Pill shape */
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* --- Estados (Loading, Erro, Vazio) --- */
+.centeredState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1rem;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.errorBox {
+  background-color: var(--color-error-bg, #fff1f2); /* Fallback color */
+  border: 1px solid var(--color-error, #ffccc7);
+  color: var(--color-error, #a8071a);
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 1.5rem;
+}
+
+/* --- Tabela Responsiva --- */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto; /* Permite scroll horizontal em telas pequenas */
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  /* Garante que a tabela não fique menor que uma largura mínima, forçando o scroll */
+  min-width: 600px; 
+}
+
+.table th, .table td {
+  padding: 1rem; /* 16px */
+  white-space: nowrap; /* Impede que o texto quebre, ideal para tabelas com scroll */
+}
+
+.table th {
+  background-color: #f8fafc; /* Um tom ligeiramente diferente do fundo do app */
+  color: var(--color-text-secondary);
+  font-size: 0.75rem; /* 12px */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.9rem; /* 14.4px */
+}
+
+/* Remove a borda da última linha para um visual mais limpo */
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.clientName {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.cnpj {
+  font-family: monospace;
+}
+
+/* ==========================================================================
+   TABLET & DESKTOP STYLES
+   ========================================================================== */
+
+/* --- Tablet (e acima) --- */
+@media (min-width: 768px) {
+  .container {
+    max-width: 1200px; /* Limita a largura máxima em telas grandes */
+    padding: 2rem;     /* Aumenta o padding */
+  }
+
+  .header {
+    flex-direction: row; /* Itens do cabeçalho lado a lado */
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .title {
+    font-size: 2rem; /* 32px */
+  }
+}

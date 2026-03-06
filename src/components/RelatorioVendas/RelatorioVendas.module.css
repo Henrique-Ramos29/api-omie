@@ -1,0 +1,75 @@
+.relatorioContainer {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  /* Grid de Mini Cards internos do relatório */
+  .statsRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .miniCard {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .miniLabel {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: bold;
+  }
+  
+  .miniValue {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  
+  /* Tabela de Vendas */
+  .tableVendas {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tableVendas th {
+    text-align: left;
+    font-size: 12px;
+    color: #94a3b8;
+    padding: 12px;
+    border-bottom: 2px solid #f1f5f9;
+  }
+  
+  .tableVendas td {
+    padding: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+  }
+  
+  .statusTag {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    background: #e0e7ff;
+    color: #4338ca;
+  }
+  
+  .valor {
+    font-weight: 600;
+    color: #059669; /* Verde para valores */
+  }
