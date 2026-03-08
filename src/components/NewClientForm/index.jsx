@@ -1,89 +1,100 @@
-import { useState } from 'react';
-import { incluirCliente } from '../../services/omieApi.js';
+import { useState, useEffect } from 'react';
 import styles from './NewClientForm.module.css';
 
-function NewClientForm({ onClientAdded }) {
-  const [formData, setFormData] = useState({ nome: '', documento: '' });
+// O formulário agora recebe onSave, editingClient e onCancel do App.jsx
+function NewClientForm({ onSave, editingClient, onCancel }) {
+  const [formData, setFormData] = useState({ 
+    nome_fantasia: '', 
+    cnpj_cpf: '',
+    email: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
+  const [feedback, setFeedback] = useState({ type: '', message: '' });
 
-  // Atualiza o estado do formulário conforme o usuário digita
+  // 1. Determina se o formulário está em modo de edição
+  const isEditing = !!editingClient;
+
+  // 2. Efeito que preenche ou limpa o formulário com base no modo
+  useEffect(() => {
+    if (isEditing) {
+      // Se está editando, preenche o formulário com os dados do cliente
+      setFormData({
+        nome_fantasia: editingClient.nome_fantasia || '',
+        cnpj_cpf: editingClient.cnpj_cpf || '',
+        email: editingClient.email || ''
+      });
+      setFeedback({ type: '', message: '' }); // Limpa feedbacks antigos
+    } else {
+      // Se não está editando (novo cadastro ou cancelamento), limpa o formulário
+      setFormData({ nome_fantasia: '', cnpj_cpf: '', email: '' });
+    }
+  }, [editingClient, isEditing]); // Roda sempre que o cliente em edição mudar
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Lida com a submissão do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.nome || !formData.documento) {
-      setError('Por favor, preencha todos os campos.');
+
+    if (!formData.nome_fantasia || !formData.cnpj_cpf) {
+      setFeedback({ type: 'error', message: 'Por favor, preencha Nome Fantasia e CNPJ/CPF.' });
       return;
     }
 
     setIsSubmitting(true);
-    setError(null);
+    setFeedback({ type: '', message: '' });
 
-    try {
-      await incluirCliente(formData);
-      alert("Cliente cadastrado com sucesso!"); // Feedback para o usuário
-      setFormData({ nome: '', documento: '' }); // Limpa o formulário
-      
-      // Avisa o componente pai (App.jsx) que um novo cliente foi adicionado
-      if (onClientAdded) {
-        onClientAdded();
-      }
-    } catch (err) {
-      // Extrai a mensagem de erro da API ou usa uma mensagem padrão
-      const errorMessage = err.message || 'Ocorreu um erro ao cadastrar o cliente.';
-      setError(errorMessage);
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
+    // 3. Chama a função onSave (que agora é inteligente no App.jsx)
+    const result = await onSave(formData);
+
+    if (result.success) {
+      setFeedback({ type: 'success', message: result.message });
+      // O App.jsx vai limpar o estado de edição, e o useEffect vai limpar o formulário
+    } else {
+      setFeedback({ type: 'error', message: `Falha: ${result.message}` }); 
     }
+
+    setIsSubmitting(false);
   };
 
   return (
     <aside className={styles.formContainer}>
-      <h3 className={styles.formTitle}>Cadastro Rápido</h3>
-      <form onSubmit={handleSubmit}>
-        {/* Campo Nome / Razão Social */}
+      {/* 4. Título dinâmico */}
+      <h3 className={styles.formTitle}>{isEditing ? 'Editar Cliente' : 'Cadastro Rápido de Cliente'}</h3>
+      <form onSubmit={handleSubmit} noValidate>
+        {/* Inputs (nenhuma mudança aqui) */}
         <div className={styles.formGroup}>
-          <label htmlFor="nome">Nome / Razão Social</label>
-          <input
-            type="text"
-            id="nome"
-            name="nome"
-            value={formData.nome}
-            onChange={handleChange}
-            placeholder="Ex: Empresa de Teste LTDA"
-            disabled={isSubmitting}
-          />
+          <label htmlFor="nome_fantasia">Nome Fantasia</label>
+          <input id="nome_fantasia" name="nome_fantasia" value={formData.nome_fantasia} onChange={handleChange} disabled={isSubmitting} required />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="cnpj_cpf">CNPJ / CPF</label>
+          <input id="cnpj_cpf" name="cnpj_cpf" value={formData.cnpj_cpf} onChange={handleChange} disabled={isSubmitting} required />
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="email">Email</label>
+          <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} disabled={isSubmitting} />
         </div>
 
-        {/* Campo CNPJ / CPF */}
-        <div className={styles.formGroup}>
-          <label htmlFor="documento">CNPJ / CPF</label>
-          <input
-            type="text"
-            id="documento"
-            name="documento"
-            value={formData.documento}
-            onChange={handleChange}
-            placeholder="Digite o documento (apenas números)"
-            disabled={isSubmitting}
-          />
-        </div>
-
-        {/* Exibição de Erro */}
-        {error && (
-          <div className={styles.errorBox}>{error}</div>
+        {feedback.message && (
+          <div className={feedback.type === 'success' ? styles.successBox : styles.errorBox}>
+            {feedback.message}
+          </div>
         )}
-
-        {/* Botão de Submissão */}
-        <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
-          {isSubmitting ? 'Cadastrando...' : 'Cadastrar Cliente'}
-        </button>
+        
+        {/* 5. Botões dinâmicos */}
+        <div className={styles.buttonGroup}>
+          <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+            {isSubmitting ? (isEditing ? 'Salvando...' : 'Cadastrando...') : (isEditing ? 'Salvar Alterações' : 'Cadastrar Cliente')}
+          </button>
+          {isEditing && (
+            <button type="button" className={styles.cancelButton} onClick={onCancel} disabled={isSubmitting}>
+              Cancelar
+            </button>
+          )}
+        </div>
       </form>
     </aside>
   );

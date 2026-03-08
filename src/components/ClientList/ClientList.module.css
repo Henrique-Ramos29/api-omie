@@ -1,136 +1,153 @@
 /* ==========================================================================
-   CLIENT LIST STYLES (Mobile-First)
+   ESTILO DA TABELA DE CLIENTES (DESKTOP-FIRST, RESPONSIVA)
    ========================================================================== */
 
-/* --- Container Principal --- */
-.container {
-  /* Em telas pequenas, o container ocupa a largura total com um padding suave */
-  width: 100%;
-  padding: 1.5rem; /* 24px */
-  margin: 0 auto;
-}
-
-/* --- Cabeçalho --- */
-.header {
-  display: flex;
-  flex-direction: column; /* Empilha os itens verticalmente no celular */
-  align-items: flex-start;
-  gap: 0.5rem; /* Espaço entre o título e o contador */
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.title {
-  font-size: 1.75rem; /* 28px */
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.countBadge {
-  background-color: var(--color-primary);
-  color: var(--color-surface);
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px; /* Pill shape */
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-/* --- Estados (Loading, Erro, Vazio) --- */
-.centeredState {
+.listContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 4rem 1rem;
-  background-color: var(--color-surface);
-  border-radius: var(--border-radius-lg);
-  border: 1px dashed var(--color-border);
-  color: var(--color-text-secondary);
+  height: 100%;
 }
 
-.errorBox {
-  background-color: var(--color-error-bg, #fff1f2); /* Fallback color */
-  border: 1px solid var(--color-error, #ffccc7);
-  color: var(--color-error, #a8071a);
-  padding: 1rem;
-  border-radius: var(--border-radius-md);
+.listTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
   margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-primary);
 }
 
-/* --- Tabela Responsiva --- */
-.tableWrapper {
+/* Estilo da tabela para telas maiores */
+.clientTable {
   width: 100%;
-  overflow-x: auto; /* Permite scroll horizontal em telas pequenas */
-  background-color: var(--color-surface);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
+  border-collapse: collapse; /* Remove espaço entre as células */
+  font-size: 1rem;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  /* Garante que a tabela não fique menor que uma largura mínima, forçando o scroll */
-  min-width: 600px; 
-}
-
-.table th, .table td {
-  padding: 1rem; /* 16px */
-  white-space: nowrap; /* Impede que o texto quebre, ideal para tabelas com scroll */
-}
-
-.table th {
-  background-color: #f8fafc; /* Um tom ligeiramente diferente do fundo do app */
-  color: var(--color-text-secondary);
-  font-size: 0.75rem; /* 12px */
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.table td {
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  font-size: 0.9rem; /* 14.4px */
-}
-
-/* Remove a borda da última linha para um visual mais limpo */
-.table tr:last-child td {
-  border-bottom: none;
-}
-
-.clientName {
-  font-weight: 600;
+.clientTable thead {
+  background-color: var(--color-surface-variant); /* Cor de fundo para o cabeçalho */
   color: var(--color-text-primary);
 }
 
-.cnpj {
-  font-family: monospace;
+.clientTable th,
+.clientTable td {
+  padding: 0.75rem 1rem; /* Espaçamento interno das células */
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle; /* Alinha o conteúdo verticalmente */
 }
 
-/* ==========================================================================
-   TABLET & DESKTOP STYLES
-   ========================================================================== */
+.clientTable th {
+  font-weight: 600; /* Deixa o texto do cabeçalho em negrito */
+}
 
-/* --- Tablet (e acima) --- */
-@media (min-width: 768px) {
-  .container {
-    max-width: 1200px; /* Limita a largura máxima em telas grandes */
-    padding: 2rem;     /* Aumenta o padding */
+.clientTable tbody tr:hover {
+  background-color: var(--color-surface-hover); /* Efeito ao passar o mouse */
+}
+
+/* --- NOVOS ESTILOS PARA A COLUNA DE AÇÕES E BOTÕES -- */
+
+.actionsHeader {
+  text-align: center !important; /* Centraliza o título "Ações" */
+}
+
+.actionsCell {
+  text-align: center !important; /* Centraliza os botões */
+  white-space: nowrap; /* Impede que os botões quebrem a linha */
+}
+
+.actionButton {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0 0.2rem;
+}
+
+.editButton {
+  background-color: var(--color-secondary);
+}
+
+.editButton:hover {
+  background-color: #5a6268; /* Um tom mais escuro de cinza */
+}
+
+.deleteButton {
+  background-color: var(--color-error);
+}
+
+.deleteButton:hover {
+  background-color: #c82333; /* Um tom mais escuro de vermelho */
+}
+
+/* --------------------------------------------------- */
+
+.noClientsMessage {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  color: var(--color-text-secondary);
+  padding: 2rem;
+  text-align: center;
+  height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .clientTable thead {
+    display: none; 
   }
 
-  .header {
-    flex-direction: row; /* Itens do cabeçalho lado a lado */
-    justify-content: space-between;
-    align-items: center;
-    gap: 1.5rem;
+  .clientTable,
+  .clientTable tbody,
+  .clientTable tr,
+  .clientTable td {
+    display: block;
+    width: 100%;
   }
 
-  .title {
-    font-size: 2rem; /* 32px */
+  .clientTable tr {
+    background-color: var(--color-surface);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--color-primary);
+  }
+
+  .clientTable td {
+    text-align: right;
+    padding: 0.75rem 1rem;
+    position: relative;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .clientTable td:last-child {
+    border-bottom: none;
+  }
+
+  .clientTable td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    text-align: left;
+  }
+
+  /* Ajuste para a célula de ações no mobile */
+  .actionsCell {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    padding: 0.75rem 1rem;
+  }
+
+  .actionsCell::before {
+    display: none; /* Oculta o label "Ações:" no mobile */
   }
 }

@@ -1,43 +1,52 @@
-import { useEffect, useState } from 'react';
-import { getFinancas } from '../../services/omieApi';
 import styles from './Dashboard.module.css';
 
-const Dashboard = () => {
-  const [data, setData] = useState({ total: 0, count: 0 });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getFinancas().then(res => {
-      const lista = res.contas_receber_cadastro || [];
-      const total = lista.reduce((acc, curr) => acc + curr.valor_liquido, 0);
-      setData({ total, count: lista.length });
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
-
-  if (loading) return <div className={styles.container}>Carregando financeiro...</div>;
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.gridCards}>
-        <div className={styles.card}>
-          <div className={styles.cardTitle}>Total a Receber</div>
-          <div className={styles.cardValue}>
-            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.total)}
-          </div>
-          <div className={styles.statusPositive}>↑ 12% em relação ao mês anterior</div>
-        </div>
-
-        <div className={styles.card} style={{borderColor: '#10b981'}}>
-          <div className={styles.cardTitle}>Notas Fiscais Abertas</div>
-          <div className={styles.cardValue}>{data.count}</div>
-          <div className={styles.statusPositive}>Aguardando pagamento</div>
-        </div>
-      </div>
-      
-      <p style={{color: '#666'}}>* Dados extraídos em tempo real do Omie.Cash</p>
-    </div>
-  );
+// Função para formatar moeda
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('pt-BR', { 
+    style: 'currency', 
+    currency: 'BRL' 
+  }).format(value || 0); // Garante que o valor não seja nulo
 };
 
-export default Dashboard;
+// Componente Dashboard simplificado
+export default function Dashboard({ financas, vendas }) {
+  // Calcula o total de contas a receber
+  const totalAReceber = financas.reduce((acc, conta) => acc + (conta.valor_liquido || 0), 0);
+
+  // Calcula o valor total de vendas
+  const totalVendas = vendas.reduce((acc, venda) => {
+    // A API de vendas pode ter uma estrutura de totais diferente
+    return acc + (venda.total_pedido?.valor_total_pedido || 0);
+  }, 0);
+
+  return (
+    // Usando as novas classes CSS
+    <div className={styles.dashboardContainer}>
+      <h2 className={styles.dashboardTitle}>Seu Resumo Financeiro</h2>
+
+      <div className={styles.cardsContainer}>
+        {/* Card de Contas a Receber */}
+        <div className={styles.card}>
+          <div>
+            <h3 className={styles.cardTitle}>Contas a Receber</h3>
+            <p className={styles.cardValue}>{formatCurrency(totalAReceber)}</p>
+            <p className={styles.cardDescription}>
+              {financas.length} {financas.length === 1 ? 'título em aberto' : 'títulos em aberto'}
+            </p>
+          </div>
+        </div>
+
+        {/* Card de Vendas */}
+        <div className={`${styles.card} ${styles.secondary}`}>
+          <div>
+            <h3 className={styles.cardTitle}>Total em Vendas</h3>
+            <p className={styles.cardValue}>{formatCurrency(totalVendas)}</p>
+            <p className={styles.cardDescription}>
+              {vendas.length} {vendas.length === 1 ? 'pedido registrado' : 'pedidos registrados'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

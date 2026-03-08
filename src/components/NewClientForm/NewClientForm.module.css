@@ -1,50 +1,53 @@
 /* ==========================================================================
-   NEW CLIENT FORM STYLES
+   ESTILO DO FORMULÁRIO DE NOVO CLIENTE (REVISADO)
    ========================================================================== */
 
 .formContainer {
   background-color: var(--color-surface);
-  padding: 1.5rem; /* 24px */
+  padding: 2rem;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
-  height: fit-content; /* Garante que o container não seja maior que o conteúdo */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .formTitle {
-  font-size: 1.25rem; /* 20px */
-  font-weight: 600;
-  margin-bottom: 1.5rem;
   color: var(--color-text-primary);
+  margin-bottom: 1.5rem;
+  text-align: left;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .formGroup {
-  margin-bottom: 1.25rem; /* 20px */
+  margin-bottom: 1.25rem;
 }
 
 .formGroup label {
   display: block;
-  margin-bottom: 0.5rem; /* 8px */
-  font-size: 0.875rem; /* 14px */
-  font-weight: 500;
+  margin-bottom: 0.5rem;
   color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .formGroup input {
   width: 100%;
-  padding: 0.75rem 1rem; /* 12px 16px */
+  padding: 0.75rem 1rem;
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  font-size: 1rem;
   color: var(--color-text-primary);
   background-color: var(--color-background);
+  border-radius: var(--border-radius-md);
+  box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
+  font-size: 1rem;
 }
 
 .formGroup input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(106, 90, 249, 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
 }
 
 .formGroup input::placeholder {
@@ -52,10 +55,37 @@
   opacity: 0.7;
 }
 
-/* --- Botão de Submissão --- */
+.feedbackBox, .errorBox, .successBox {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  font-weight: 500;
+}
+
+.errorBox {
+  color: var(--color-error);
+  background-color: color-mix(in srgb, var(--color-error) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-error) 20%, transparent);
+}
+
+.successBox {
+  color: var(--color-success);
+  background-color: color-mix(in srgb, var(--color-success) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-success) 20%, transparent);
+}
+
+/* --- NOVOS ESTILOS PARA O GRUPO DE BOTÕES -- */
+
+.buttonGroup {
+  margin-top: auto; /* Empurra os botões para o final do card */
+  display: flex;
+  gap: 0.75rem; /* Espaço entre os botões */
+}
+
 .submitButton {
-  width: 100%;
-  padding: 0.875rem; /* 14px */
+  flex-grow: 1; /* Faz o botão de salvar crescer para preencher o espaço */
+  padding: 0.85rem;
   border: none;
   border-radius: var(--border-radius-md);
   background-color: var(--color-primary);
@@ -63,26 +93,40 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.cancelButton {
+  padding: 0.85rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
 .submitButton:hover:not(:disabled) {
   background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
 }
 
-.submitButton:disabled {
-  background-color: #a5b4fc; /* Um tom mais claro de roxo */
+.cancelButton:hover:not(:disabled) {
+  background-color: var(--color-surface-variant);
+  border-color: var(--color-text-secondary);
+}
+
+.submitButton:disabled,
+.cancelButton:disabled {
+  background-color: var(--color-border);
+  color: var(--color-text-secondary);
   cursor: not-allowed;
+  transform: none;
 }
 
-/* --- Caixa de Erro --- */
-.errorBox {
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.25rem;
-  background-color: #fff2f2;
-  border: 1px solid #ffcbc8;
-  color: #c50e0e;
-  border-radius: var(--border-radius-md);
-  font-size: 0.875rem;
-  text-align: center;
+.cancelButton:disabled {
+  background-color: transparent; /* Mantém o fundo transparente quando desabilitado */
 }
+
