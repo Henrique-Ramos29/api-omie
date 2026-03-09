@@ -1,161 +1,97 @@
-# Painel de Gestão Omie - Aplicação React.js vite
+
+# Painel de Gestão com Integração Segura à API Omie
 
 ## 1. Visão Geral
 
-Esta é uma aplicação web de página única (SPA - Single Page Application) desenvolvida com **React** e **Vite**. O objetivo do projeto é fornecer uma interface de usuário moderna e reativa para interagir com a API do ERP Omie, permitindo a gestão de clientes e a visualização de dados de negócios em um painel de controle.
+Este projeto é um painel de gestão (dashboard) interativo, desenvolvido em React, que se conecta à API do ERP Omie. A aplicação permite visualizar clientes, produtos e dados financeiros, além de possibilitar o cadastro, edição e exclusão de clientes de forma segura e eficiente.
 
-A aplicação consome os dados da Omie para exibir informações sobre clientes, finanças, vendas e produtos, e implementa funcionalidades completas de **CRUD (Criar, Ler, Atualizar, Excluir)** para o cadastro de clientes.
-
----
-
-## 2. Principais Funcionalidades
-
-- **Dashboard Analítico:** Apresenta cartões com métricas de alto nível, como "Total a Receber" e "Vendas Realizadas".
-- **Gestão Completa de Clientes (CRUD):**
-    - **Criação:** Um formulário de cadastro rápido permite adicionar novos clientes.
-    - **Leitura:** Lista todos os clientes em uma tabela clara e responsiva.
-    - **Atualização:** Um formulário "inteligente" se adapta para editar os dados de um cliente existente.
-    - **Exclusão:** Permite remover clientes do sistema.
-- **Listagem de Produtos:** Exibe uma lista de produtos cadastrados.
-- **Design Responsivo:** A interface se adapta para uma boa experiência de uso tanto em desktops quanto em dispositivos móveis.
-- **Comunicação Segura com a API:** Utiliza um proxy configurado no Vite para evitar problemas de CORS e proteger as credenciais da API.
+O principal desafio técnico superado neste projeto foi garantir a segurança das credenciais da API Omie, que não podem ser expostas no código do frontend (navegador). A solução implementada utiliza uma arquitetura de **Proxy Seguro** com Serverless Functions na plataforma Vercel.
 
 ---
 
-## 3. Como Executar o Projeto Localmente
+## 2. Arquitetura da Solução e Fluxo de Dados
 
-Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente de desenvolvimento.
+A arquitetura foi desenhada para criar uma camada de abstração entre o frontend e a API externa, garantindo a segurança das credenciais.
 
-### Pré-requisitos
+### Fluxo de Comunicação Segura:
 
-- **Node.js**: Versão 18.x ou superior.
-- **npm** (ou um gerenciador de pacotes similar como Yarn ou pnpm).
-- **Credenciais da API Omie**: Você precisará de um `APP_KEY` e `APP_SECRET`.
+1.  **Requisição do Frontend:** A aplicação React (executando no navegador do usuário) não chama a API da Omie diretamente. Em vez disso, ela faz uma requisição para um endpoint interno da nossa própria aplicação, localizado em `/api/proxy`.
+2.  **Serverless Function (Proxy):** Esta requisição é interceptada por uma **Serverless Function** (arquivo `api/proxy.js`) hospedada na Vercel. Esta função atua como um intermediário seguro.
+3.  **Injeção Segura de Credenciais:** Já no ambiente do servidor (Vercel), a função de proxy lê as credenciais `OMIE_APP_KEY` e `OMIE_APP_SECRET`, que estão armazenadas de forma segura como **Variáveis de Ambiente** na Vercel.
+4.  **Chamada à API Omie:** A função de proxy, agora de posse das credenciais, monta a requisição final e a envia para a API oficial da Omie. Esta comunicação ocorre de servidor para servidor, longe do alcance do navegador do usuário.
+5.  **Retorno da Resposta:** A resposta da Omie é recebida pela função de proxy, que simplesmente a repassa de volta para a aplicação React no frontend.
 
-### Passos para Instalação
+Este fluxo garante que as chaves da API nunca saiam do ambiente seguro do servidor.
 
-1.  **Clone o Repositório:**
+---
+
+## 3. Tecnologias e Plataformas Utilizadas
+
+### Frontend:
+*   **React:** Biblioteca para construção da interface de usuário.
+*   **Vite:** Ferramenta de build para desenvolvimento rápido.
+*   **CSS Modules:** Para estilização escopada dos componentes.
+
+### Backend (Infraestrutura como Código):
+*   **Serverless Function (Vercel):** Uma função JavaScript (`api/proxy.js`) que executa no lado do servidor para intermediar as chamadas à API.
+
+### Plataforma de Hospedagem (PaaS):
+*   **Vercel:** Utilizada para:
+    *   **Deploy Contínuo:** Integração com o Git para deploy automático a cada `git push`.
+    *   **Hospedagem do Frontend:** Distribuição global do site estático (React).
+    *   **Execução da Serverless Function:** Fornece o ambiente de execução para o nosso proxy.
+    *   **Gerenciamento de Segredos:** Armazenamento seguro das credenciais da API como **Variáveis de Ambiente**, acessíveis apenas pelo backend.
+
+---
+
+## 4. Estrutura do Projeto
+
+```
+/
+├── api/
+│   └── proxy.js         # Serverless Function (Backend Proxy)
+├── src/
+│   ├── components/      # Componentes React reutilizáveis
+│   │   ├── ClientList/
+│   │   ├── Dashboard/
+│   │   └── ...
+│   ├── services/
+│   │   └── omieApi.js     # Funções que chamam o proxy (NÃO a API Omie diretamente)
+│   ├── App.jsx          # Componente principal da aplicação
+│   └── main.jsx         # Ponto de entrada do React
+├── package.json         # Dependências e scripts do projeto
+└── README.md            # Este documento
+```
+
+---
+
+## 5. Como Executar o Projeto Localmente
+
+1.  **Clonar o Repositório:**
     ```bash
     git clone <URL_DO_REPOSITORIO>
-    cd <NOME_DA_PASTA>
+    cd <NOME_DO_PROJETO>
     ```
 
-2.  **Instale as Dependências:**
-    Execute o comando abaixo para instalar as bibliotecas necessárias (React, Vite, etc.).
+2.  **Instalar as Dependências:**
     ```bash
     npm install
     ```
 
-3.  **Configure as Variáveis de Ambiente:**
-    Crie um arquivo chamado `.env.local` na raiz do projeto. Este arquivo guardará suas credenciais de forma segura. Adicione o seguinte conteúdo a ele, substituindo pelos seus valores reais:
-    ```env
-    VITE_OMIE_APP_KEY="SUA_APP_KEY_AQUI"
-    VITE_OMIE_APP_SECRET="SUA_APP_SECRET_AQUI"
+3.  **Configurar Variáveis de Ambiente Locais:**
+    *   Crie um arquivo chamado `.env.local` na raiz do projeto.
+    *   Adicione suas credenciais da Omie a este arquivo. O prefixo `VITE_` é necessário para que o Vite as exponha ao servidor de desenvolvimento local.
     ```
-    > **Importante:** O arquivo `.env.local` não deve ser enviado para o controle de versão (Git), pois contém informações sensíveis.
+    VITE_OMIE_APP_KEY=SUA_APP_KEY
+    VITE_OMIE_APP_SECRET=SUA_APP_SECRET
+    ```
 
-4.  **Rode o Servidor de Desenvolvimento:**
-    Este comando iniciará a aplicação em modo de desenvolvimento, geralmente em `http://localhost:5173`. O servidor possui Hot-Reload, atualizando a página automaticamente quando você salva um arquivo.
+4.  **Configurar o Proxy para Desenvolvimento (vite.config.js):**
+    *   Para simular o comportamento da Vercel localmente, uma configuração de proxy é necessária no arquivo `vite.config.js`. Este passo já foi feito no projeto original para redirecionar as chamadas `/api` para a API da Omie durante o desenvolvimento.
+
+5.  **Iniciar o Servidor de Desenvolvimento:**
     ```bash
     npm run dev
     ```
 
-### Scripts Disponíveis
-
-- `npm run dev`: Inicia o servidor de desenvolvimento.
-- `npm run build`: Compila e otimiza a aplicação para produção, gerando os arquivos na pasta `dist/`.
-- `npm run preview`: Inicia um servidor local para visualizar a versão de produção (após o `build`).
-
----
-
-## 4. Arquitetura e Estrutura do Código
-
-O projeto utiliza uma arquitetura baseada em componentes, onde cada parte da interface é um bloco de construção reutilizável.
-
-```
-/
-├── dist/               # Pasta com os arquivos de produção (gerada pelo `npm run build`)
-├── public/             # Arquivos estáticos (ícones, etc.)
-├── src/
-│   ├── components/     # Componentes React reutilizáveis
-│   │   ├── ClientList/
-│   │   ├── Dashboard/
-│   │   ├── NewClientForm/
-│   │   └── ProductList/
-│   ├── services/
-│   │   └── omieApi.js  # Módulo central para toda a comunicação com a API Omie
-│   ├── App.jsx         # Componente principal que organiza a aplicação
-│   ├── App.module.css  # Estilos específicos do App.jsx
-│   ├── index.css       # Estilos globais e variáveis de CSS
-│   └── main.jsx        # Ponto de entrada da aplicação React
-├── .env.local          # Arquivo local com as credenciais da API (NÃO VERSIONADO)
-├── index.html          # Template HTML principal
-├── package.json        # Dependências e scripts do projeto
-├── README.md           # Esta documentação
-└── vite.config.js      # Arquivo de configuração do Vite (incluindo o proxy)
-```
-
-### Análise dos Principais Arquivos
-
-#### `src/services/omieApi.js`
-
-Este é o cérebro da comunicação com o back-end. Ele abstrai todas as chamadas à API Omie em funções JavaScript simples de usar.
-
-- **Funções Exportadas:** `getClientes`, `incluirCliente`, `alterarCliente`, `excluirCliente`, `getFinancas`, etc.
-- **Error Handling:** Utiliza uma função `handleResponse` para centralizar o tratamento de erros e a extração de mensagens da API.
-- **Segurança:** Lê as credenciais (`APP_KEY`, `APP_SECRET`) das variáveis de ambiente (`import.meta.env`), evitando que sejam expostas no código-fonte.
-
-#### `vite.config.js`
-
-Este arquivo é crucial para o funcionamento da aplicação. Ele configura o **servidor proxy**.
-```javascript
-server: {
-  proxy: {
-    '/api': {
-      target: 'https://app.omie.com.br/api',
-      changeOrigin: true,
-      rewrite: (path) => path.replace(/^\/api/, ''),
-    },
-  },
-},
-```
-- **Por que um proxy?** Navegadores bloqueiam requisições de um site (`localhost`) para uma API em outro domínio (`app.omie.com.br`) por segurança (política de CORS). O proxy faz com que o servidor de desenvolvimento intercepte as chamadas para `/api` e as redirecione para a Omie, contornando essa restrição.
-
-#### `src/App.jsx`
-
-É o componente orquestrador.
-- **Gerenciamento de Estado:** Usa `useState` para armazenar os dados principais (lista de clientes, dados do dashboard, estado de carregamento).
-- **Busca de Dados:** A função `fetchData` (dentro de `useEffect` e `useCallback`) usa `Promise.allSettled` para carregar os dados iniciais de forma robusta, garantindo que a aplicação não trave se uma das APIs falhar.
-- **Lógica de CRUD:** Contém as funções `handleSaveClient`, `handleDeleteClient` e `handleSelectClientForEdit`, que são passadas como `props` para os componentes filhos (`ClientList` e `NewClientForm`) para que eles possam executar ações.
-- **Rolagem Inteligente:** Usa `useRef` para marcar a posição do formulário e rolar a tela suavemente até ele quando o modo de edição é ativado.
-
-#### `src/components/NewClientForm/`
-
-Um formulário "inteligente" que serve tanto para **criar** quanto para **editar** clientes.
-- **Modo Dinâmico:** Verifica a `prop` `editingClient`. Se ela existir, o formulário entra em modo de edição.
-- **`useEffect`:** Preenche automaticamente os campos com os dados do cliente quando o modo de edição é ativado.
-- **Aparência Dinâmica:** O título ("Cadastrar" vs. "Editar") e os botões ("Salvar Alterações", "Cancelar") mudam de acordo com o modo.
-
-#### `src/components/ClientList/`
-
-Exibe os clientes em uma tabela.
-- **Renderização:** Mapeia o array `clientes` (recebido via `props`) para criar as linhas da tabela.
-- **Interatividade:** Os botões "Editar" e "Excluir" não contêm a lógica diretamente; em vez disso, eles chamam as funções `onEdit` e `onDelete` (recebidas via `props` do `App.jsx`), delegando a ação ao componente pai.
-
----
-
-## 5. Estilização (Styling)
-
-A aplicação utiliza uma abordagem híbrida para o CSS:
-
-- **`index.css`:** Contém estilos globais, reset, a importação da fonte "Inter" e, mais importante, as **variáveis de CSS (CSS Custom Properties)**.
-  ```css
-  :root {
-    --color-primary: #007bff;
-    --color-background: #f8f9fa;
-    /* ...outras variáveis */
-  }
-  ```
-  Isso permite manter uma identidade visual consistente e facilita a mudança de temas.
-
-- **CSS Modules (`*.module.css`):** Cada componente tem seu próprio arquivo de estilo. Essa técnica garante que as classes CSS são escopadas localmente para cada componente, evitando conflitos de nomes de classes em uma aplicação grande.
+A aplicação estará disponível em `http://localhost:5173`.
